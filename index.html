@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<!-- === Header Starts === -->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>MUTR3D</title>
+
+    <link href="./assets/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/font.css" rel="stylesheet" type="text/css">
+    <link href="./assets/style.css" rel="stylesheet" type="text/css">
+    <script src="./assets/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/corpus.js"></script>
+
+</head>
+<!-- === Header Ends === -->
+
+<script>
+    var lang_flag = 1;
+</script>
+
+<body>
+
+<!-- === Home Section Starts === -->
+<div class="section">
+    <!-- === Title Starts === -->
+
+    <!-- <div class="logo" style="padding-left: 120pt" align="top">
+        <a href="https://github.com/metadriverse/metadrive" target="_blank">
+            <img style=" width: 450pt;" src="images/metadrive.png">
+        </a>
+    </div> -->
+
+    <div class="header">
+        <div style="" class="title" id="lang">
+            MUTR3D: A Multi-camera Tracking Framework via 3D-to-2D Queries
+        </div>
+    </div>
+    <!-- === Title Ends === -->
+
+    <div class="author" style="margin-top: -30pt">
+        <a href="#" target="_blank">Xuanyao Chen</a><sup>*</sup>,&nbsp;
+        <a href="https://tianyuanzhang.com/" target="_blank">Tianyuan Zhang</a><sup>*</sup>,&nbsp;
+        <a href="https://people.csail.mit.edu/yuewang/" target="_blank">Yue Wang</a><sup>3</sup>,&nbsp;
+        <a href="https://scholar.google.com.hk/citations?hl=en&user=nUyTDosAAAAJ">Yilun Wang</a><sup>4</sup>,&nbsp;
+        <a href="https://hangzhaomit.github.io/">Hang Zhao</a><sup>5</sup>&nbsp;
+    </div>
+
+    <div class="institution">
+        <div><sup>1</sup>Fudan University,
+            <sup>2</sup>Carnegie Mellon University,
+            <sup>3</sup>Massachusetts Institute of Technology,
+        </div>
+        <div>
+            <sup>4</sup>Li Auto,
+            <sup>5</sup>Tsinghua University
+        </div>
+    </div>
+
+    <table border="0" align="center">
+        <tr>
+            <td align="center" style="padding: 0pt 0 15pt 0">
+                <a class="bar" href="https://tsinghua-mars-lab.github.io/MUTR3D/"><b>Webpage</b></a> |
+                <a class="bar" href="#"><b>Code</b></a> |
+                <a class="bar" href="https://arxiv.org/abs/2205.00613"><b>Paper</b></a>
+            </td>
+        </tr>
+    </table>
+    
+    <!--<div align="center">
+        <table width="100%" style="margin: 0pt 0pt; text-align: center;">
+            <tr>
+                <td>
+                    <video style="display:block; width:100%; height:auto; "
+                           autoplay="autoplay" muted loop="loop" controls playsinline>
+                        <source src="https://raw.githubusercontent.com/decisionforce/archive/master/MetaDrive/metadrive_teaser.mp4"
+                                type="video/mp4"/>
+                    </video>
+                </td>
+            </tr>
+        </table>
+    </div> -->
+    
+</div>
+<!-- === Home Section Ends === -->
+
+
+
+
+<div class="section">
+    <div class="title" id="lang">Abstract</div>
+    <p>
+     Accurate and consistent 3D tracking from multiple cameras is a key component in a vision-based autonomous driving system. It involves modeling 3D dynamic objects in complex scenes across multiple cameras. This problem is inherently challenging due to depth estimation, visual occlusions, appearance ambiguity, etc. Moreover, objects are not consistently associated across time and cameras. To address that, we propose an end-to-end <b>MU</b>lticamera <b>TR</b>acking framework called MUTR3D. In contrast to prior works, MUTR3D does not explicitly rely on the spatial and appearance similarity of objects. Instead, our method introduces 3D track query to model spatial and appearance coherent track for each object that appears in multiple cameras and multiple frames. We use camera transformations to link 3D trackers with their observations in 2D images. Each tracker is further refined according to the features that are obtained from camera images. MUTR3D uses a set-to-set loss to measure the difference between the predicted tracking results and the ground truths. Therefore, it does not require any post-processing such as non-maximum suppression and/or bounding box association. MUTR3D outperforms state-of-the-art methods by <b>5.3</b> AMOTA on the nuScenes dataset.
+    </p>
+    <!-- <ul>
+        <li>
+            <b>Compositional</b>: It supports generating infinite scenes with various road maps and traffic settings for the
+            research of generalizable RL.
+        </li>
+        <li>
+            <b>Lightweight</b>: It is easy to install and run. It can run up to 300 FPS on a standard PC.
+        </li>
+        <li>
+            <b>Realistic</b>: Accurate physics simulation and multiple sensory input including Lidar, RGB images, top-down
+            semantic map and first-person view images. The real traffic data replay is also supported.
+        </li>
+    </ul> -->
+ 
+</div>
+
+
+<!-- === Reference Section Starts === -->
+<div class="section">
+    <div class="bibtex">
+       <div class="title" id="lang">Reference</div>
+    </div>
+Please refer to the <a href="https://arxiv.org/abs/2203.10642">technical report</a> or the <a href="#">code repo</a> for more information.
+    <pre>
+@article{zhang2022mutr3d,
+  title={FUTR3D: A Unified Sensor Fusion Framework for 3D Detection},
+  author={Chen, Xuanyao and Zhang, Tianyuan and Wang, Yue and Wang, Yilun and Zhao, Hang},
+  journal={arXiv preprint arXiv:2203.10642},
+  year={2022}
+}
+</pre>
+    <!-- Adjust the frame size based on the demo (Every project differs). -->
+</div>
+
+</body>
+</html>
