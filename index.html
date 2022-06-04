@@ -93,6 +93,9 @@
 
 <div class="section">
     <div class="title" id="lang">Abstract</div>
+    <div class="logo" style="" align="center">
+        <img style="width: 700pt;" src="images/teaser.png">
+    </div>
     <p>
         Sensor fusion is an essential topic in many perception systems, such as autonomous driving and robotics. Existing multi-modal 3D detection models usually involve customized designs depending on the sensor combinations or setups. In this work, we propose the first unified end-to-end sensor fusion framework for 3D detection, named FUTR3D, which can be used in (almost) any sensor configuration. FUTR3D employs a query-based Modality-Agnostic Feature Sampler (MAFS), together with a transformer decoder with a set-to-set loss for 3D detection, thus avoiding using late fusion heuristics and post-processing tricks. We validate the effectiveness of our framework on various combinations of cameras, low-resolution LiDARs, high-resolution LiDARs, and Radars. On NuScenes dataset, FUTR3D achieves better performance over specifically designed methods across different sensor combinations. Moreover, FUTR3D achieves great flexibility with different sensor configurations and enables low-cost autonomous driving. For example, only using a 4-beam LiDAR with cameras, FUTR3D (56.8 mAP) achieves on par performance with state-of-the-art 3D detection model CenterPoint (56.6 mAP) using a 32-beam LiDAR.
     </p>
@@ -144,7 +147,7 @@
           data-nothumb><br>DETR3D</a>
       </td>
       <td>
-      <a href="#" class="d-inline-block p-3"><img height="100"
+      <a href="https://github.com/Tsinghua-MARS-Lab/MUTR3D" class="d-inline-block p-3"><img height="100"
           src="images/MUTR3D_paper_thumbnail.png" style="border:1px solid"
           data-nothumb><br>MUTR3D</a>
       </td>
