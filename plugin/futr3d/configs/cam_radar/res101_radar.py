@@ -296,7 +296,7 @@ data = dict(
         # dataset=dict(
             type=dataset_type,
             data_root=data_root,
-            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_train_radar.pkl',
+            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_train.pkl',
             pipeline=train_pipeline,
             classes=class_names,
             modality=input_modality,
@@ -309,11 +309,11 @@ data = dict(
     val=dict(
             type=dataset_type,
             pipeline=test_pipeline, classes=class_names, modality=input_modality,
-            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_val_radar.pkl',),
+            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_val.pkl',),
     test=dict(
             type=dataset_type,
             pipeline=test_pipeline, classes=class_names, modality=input_modality,
-            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_val_radar.pkl',),)
+            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_val.pkl',),)
 
 optimizer = dict(
     type='AdamW',
@@ -339,4 +339,3 @@ evaluation = dict(interval=2, pipeline=eval_pipeline)
 runner = dict(type='EpochBasedRunner', max_epochs=24)
 
 find_unused_parameters = False
-# load_from='/public/MARS/models/surrdet/image_models/fcos3d.pth'
