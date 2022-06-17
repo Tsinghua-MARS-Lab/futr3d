@@ -57,3 +57,27 @@ bash tools/dist_train.sh plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py
 | models      | mAP   | NDS |
 | ----------- | ----- | ----|
 | [Res101](./plugin/futr3d/configs/cam_only/cam_only.py)  | 34.6  | 42.5|
+
+## Acknowledgment
+
+For the implementation, we rely heavily on [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection), [MMDetection3D](https://github.com/open-mmlab/mmdetection3d), and [DETR3D](https://github.com/WangYueFt/detr3d)
+
+
+## Relevant projects 
+1. [DETR3D: 3D Object Detection from Multi-view Images via 3D-to-2D Queries](https://tsinghua-mars-lab.github.io/detr3d/)
+2. [MUTR3D: A Multi-camera Tracking Framework via 3D-to-2D Queries](https://tsinghua-mars-lab.github.io/mutr3d/)
+3. For more projects on Autonomous Driving, check out our camera-centered autonomous driving projects page [webpage](https://tsinghua-mars-lab.github.io/vcad/) 
+
+
+## Reference
+
+```
+@article{chen2022futr3d,
+  title={FUTR3D: A Unified Sensor Fusion Framework for 3D Detection},
+  author={Chen, Xuanyao and Zhang, Tianyuan and Wang, Yue and Wang, Yilun and Zhao, Hang},
+  journal={arXiv preprint arXiv:2203.10642},
+  year={2022}
+}
+```
+
+Contact: Xuanyao Chen at: `xuanyaochen18@fudan.edu.cn` or `ixyaochen@gmail.com`
