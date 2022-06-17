@@ -51,8 +51,6 @@ model = dict(
         num_outs=4,
         norm_cfg=dict(type='BN2d'),
         relu_before_extra_convs=True),
-    # use
-    #refer https://github.com/open-mmlab/mmdetection3d/blob/master/configs/_base_/models/centerpoint_02pillar_second_secfpn_nus.py
     pts_voxel_layer=None,
     pts_voxel_encoder=None,
     pts_middle_encoder=None,
@@ -322,4 +320,3 @@ runner = dict(type='EpochBasedRunner', max_epochs=24)
 
 find_unused_parameters = False
 
-#load_from = '/public/MARS/models/surrdet/pts_img_models/img_3473_01voxel_q6_epoch_38_5931.pth'
