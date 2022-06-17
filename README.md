@@ -3,8 +3,6 @@ This repo implements the paper [FUTR3D: A Unified Sensor Fusion Framework for 3D
 
 We built our implementation upon MMdetection3D. The major part of the code is in the directory plugin/futr3d. 
 
-We will release out checkpoints in the next few days!
-
 ## Environment
 ### Prerequisite
 <ol>
@@ -33,6 +31,8 @@ bash tools/dist_train.sh plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py
 ```
 
 ## Results
+We will release out checkpoints in the next few days!
+
 ### LiDAR & Cam
 | models      | mAP         | NDS |
 | ----------- | ----------- | ----|
