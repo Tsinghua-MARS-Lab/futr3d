@@ -16,11 +16,11 @@ We built our implementation upon MMdetection3D. The major part of the code is in
 
 For cameras with Radar setting, you should generate a meta file or say .pkl file including Radar infos.
 
-'''
+```
 
 python3 tools/data_converter/nusc_track.py
 
-'''
+```
 
 For others, please follow the mmdet3d to process the data.
 
@@ -28,8 +28,8 @@ For others, please follow the mmdet3d to process the data.
 
 For example, to train FUTR3D with LiDAR only on 8 GPUs, please use
 
-'''
+```
 bash tools/dist_train.sh plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py 8
-'''
+```
 
 ## Results
