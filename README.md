@@ -17,7 +17,7 @@ We built our implementation upon MMdetection3D. The major part of the code is in
 For cameras with Radar setting, you should generate a meta file or say .pkl file including Radar infos.
 
 ```python:
-python3 tools/data_converter/nusc_track.py
+python3 tools/data_converter/nusc_radar.py
 ```
 
 For others, please follow the mmdet3d to process the data.
