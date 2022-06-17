@@ -63,10 +63,10 @@ We will release out checkpoints in the next few days!
 For the implementation, we rely heavily on [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection), [MMDetection3D](https://github.com/open-mmlab/mmdetection3d), and [DETR3D](https://github.com/WangYueFt/detr3d)
 
 
-## Relevant projects 
+## Related projects 
 1. [DETR3D: 3D Object Detection from Multi-view Images via 3D-to-2D Queries](https://tsinghua-mars-lab.github.io/detr3d/)
 2. [MUTR3D: A Multi-camera Tracking Framework via 3D-to-2D Queries](https://tsinghua-mars-lab.github.io/mutr3d/)
-3. For more projects on Autonomous Driving, check out our camera-centered autonomous driving projects page [webpage](https://tsinghua-mars-lab.github.io/vcad/) 
+3. For more projects on Autonomous Driving, check out our Visual-Centric Autonomous Driving (VCAD) project page [webpage](https://tsinghua-mars-lab.github.io/vcad/) 
 
 
 ## Reference
