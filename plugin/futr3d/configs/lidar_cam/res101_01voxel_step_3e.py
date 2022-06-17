@@ -355,4 +355,3 @@ runner = dict(type='EpochBasedRunner', max_epochs=3)
 
 find_unused_parameters = True
 
-load_from = '/home/chenxuanyao/checkpoint/img_3473_01voxel_q6_epoch_38_5931.pth'
