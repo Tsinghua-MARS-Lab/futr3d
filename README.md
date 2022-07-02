@@ -47,16 +47,16 @@ We will release out checkpoints in the next few days!
 
 ### LiDAR only
 
-| models      | mAP         | NDS |
-| ----------- | ----------- | ----|
+| models      | mAP         | NDS | Link |
+| ----------- | ----------- | ----|  ----|
 | [32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py)  | 59.3 | 65.5 |
 | [4 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_4b_step_38e.py)   | 42.1 | 54.8 |
 | [1 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_1b_step_38e.py)   | 16.4 | 37.9 |
 
 ### Cam only
-| models      | mAP   | NDS |
-| ----------- | ----- | ----|
-| [Res101](./plugin/futr3d/configs/cam_only/cam_only.py)  | 34.6  | 42.5|
+| models      | mAP   | NDS | Link |
+| ----------- | ----- | ----|----  |
+| [Res101](./plugin/futr3d/configs/cam_only/cam_only.py)  | 34.6  | 42.5| [model](https://drive.google.com/file/d/1ViAih2zXm7YSdxZxLl5E9l2DvhP_dUTN/view?usp=sharing) |
 
 ## Acknowledgment
 
