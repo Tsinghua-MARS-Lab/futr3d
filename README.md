@@ -41,9 +41,9 @@ We will release out checkpoints in the next few days!
 | [Res101 + 1 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_1b_step_38e.py)   | 41.3 | 50.0 |
 
 ### Cam & Radar
-| models      | mAP         | NDS |
-| ----------- | ----------- | ----|
-| [Res101 + Radar](./plugin/futr3d/configs/cam_radar/res101_radar.py)  | 35.0  | 45.9 |
+| models      | mAP         | NDS | Link |
+| ----------- | ----------- | ----| ----- |
+| [Res101 + Radar](./plugin/futr3d/configs/cam_radar/res101_radar.py)  | 35.0  | 45.9 | model(https://drive.google.com/file/d/1QZwbQ8HcZYlZb31sRv7eRhrR9CdNBBMZ/view?usp=sharing) |
 
 ### LiDAR only
 
