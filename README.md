@@ -34,22 +34,22 @@ bash tools/dist_train.sh plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py
 We will release out checkpoints in the next few days!
 
 ### LiDAR & Cam
-| models      | mAP         | NDS |
-| ----------- | ----------- | ----|
-| [Res101 + 32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py)  | 64.2 | 68.0 |
+| models      | mAP         | NDS | Link |
+| ----------- | ----------- | ----| ---- |
+| [Res101 + 32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py)  | 64.2 | 68.0 | [model](https://drive.google.com/file/d/1N6RO6Mwx_V6LFlr1MJbLcDB3duTYYaHb/view?usp=sharing)|
 | [Res101 + 4 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_4b_step_38e.py)   | 54.9 | 61.5 |
 | [Res101 + 1 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_1b_step_38e.py)   | 41.3 | 50.0 |
 
 ### Cam & Radar
 | models      | mAP         | NDS | Link |
 | ----------- | ----------- | ----| ----- |
-| [Res101 + Radar](./plugin/futr3d/configs/cam_radar/res101_radar.py)  | 35.0  | 45.9 | model(https://drive.google.com/file/d/1QZwbQ8HcZYlZb31sRv7eRhrR9CdNBBMZ/view?usp=sharing) |
+| [Res101 + Radar](./plugin/futr3d/configs/cam_radar/res101_radar.py)  | 35.0  | 45.9 | [model](https://drive.google.com/file/d/1QZwbQ8HcZYlZb31sRv7eRhrR9CdNBBMZ/view?usp=sharing) |
 
 ### LiDAR only
 
 | models      | mAP         | NDS | Link |
 | ----------- | ----------- | ----|  ----|
-| [32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py)  | 59.3 | 65.5 |
+| [32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py)  | 59.3 | 65.5 | [model](https://drive.google.com/file/d/1HTe-Ys0Ybijw7ArFm89hnjVT0_kjy_TL/view?usp=sharing)|
 | [4 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_4b_step_38e.py)   | 42.1 | 54.8 |
 | [1 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_1b_step_38e.py)   | 16.4 | 37.9 |
 
