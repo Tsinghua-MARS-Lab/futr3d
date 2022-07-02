@@ -8,7 +8,7 @@ We built our implementation upon MMdetection3D. The major part of the code is in
 <ol>
 <li> mmcv </li>
 <li> mmdetection</li>
-<li> mmdetection3d==0.17.3</li>
+<li> mmdetection3d==0.13</li>
 <li> nuscenes-devkit</li>
 </ol>
 
