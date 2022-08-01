@@ -1,6 +1,6 @@
 _base_ = [
-    '../../../configs/_base_/datasets/nus-3d.py',
-    '../../../configs/_base_/default_runtime.py'
+    '../../../../configs/_base_/datasets/nus-3d.py',
+    '../../../../configs/_base_/default_runtime.py'
 ]
 plugin=True
 plugin_dir='plugin/futr3d/'
@@ -47,18 +47,18 @@ model = dict(
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         start_level=1,
-        add_extra_convs=True,
-        extra_convs_on_inputs=False,  # use P5
+        add_extra_convs='on_output',
+        #extra_convs_on_inputs=False,  # use P5
         num_outs=4,
         norm_cfg=dict(type='BN2d'),
         relu_before_extra_convs=True),
     radar_encoder=dict(
-        type='RadarPointEncoderXY',
+        type='RadarPointEncoder',
         in_channels=13,
         out_channels=[32, 32, 64],
         norm_cfg=dict(type='BN1d', eps=1e-3, momentum=0.01),),
     pts_bbox_head=dict(
-        type='DeformableDETR3DCamRadarHead',
+        type='DeformableFUTR3DHead',
         num_query=600,
         num_classes=10,
         in_channels=256,
@@ -66,9 +66,9 @@ model = dict(
         with_box_refine=True,
         as_two_stage=False,
         transformer=dict(
-            type='Detr3DCamRadarTransformer',
+            type='FUTR3DTransformer',
             decoder=dict(
-                type='Detr3DCamRadarTransformerDecoder',
+                type='FUTR3DTransformerDecoder',
                 num_layers=6,
                 return_intermediate=True,
                 transformerlayers=dict(
@@ -80,7 +80,10 @@ model = dict(
                             num_heads=8,
                             dropout=0.1),
                         dict(
-                            type='Detr3DCamRadarCrossAtten',
+                            type='FUTR3DCrossAtten',
+                            use_LiDAR=False,
+                            use_Cam=True,
+                            use_Radar=True,
                             pc_range=point_cloud_range,
                             num_points=1,
                             embed_dims=256,
@@ -92,7 +95,7 @@ model = dict(
                     operation_order=('self_attn', 'norm', 'cross_attn', 'norm',
                                      'ffn', 'norm')))),
         bbox_coder=dict(
-            type='DETR3DCoder',
+            type='NMSFreeCoder',
             post_center_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
             pc_range=point_cloud_range,
             max_num=300,
@@ -110,9 +113,9 @@ model = dict(
             alpha=0.25,
             loss_weight=2.0),
         loss_bbox=dict(type='L1Loss', loss_weight=0.25),
-        loss_iou=dict(type='GIoU3DLoss', loss_weight=0.0)),
+        loss_iou=dict(type='IoULoss', loss_weight=0.0)),
     # model training and testing settings
-    train_cfg=dict(
+    train_cfg=dict(pts=dict(
         grid_size=[512, 512, 1],
         voxel_size=voxel_size,
         point_cloud_range=point_cloud_range,
@@ -126,9 +129,9 @@ model = dict(
             type='HungarianAssigner3D',
             cls_cost=dict(type='FocalLossCost', weight=2.0),
             reg_cost=dict(type='BBox3DL1Cost', weight=0.25),
-            iou_cost=dict(type='GIoU3DCost', weight=0.0),
-            pc_range=point_cloud_range)),
-    test_cfg=dict(
+            iou_cost=dict(type='IoUCost', weight=0.0),
+            pc_range=point_cloud_range))),
+    test_cfg=dict(pts=dict(
         post_center_limit_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
         pc_range=point_cloud_range[:2],
         max_per_img=500,
@@ -140,7 +143,7 @@ model = dict(
         nms_type='rotate',
         pre_max_size=1000,
         post_max_size=83,
-        nms_thr=0.2))
+        nms_thr=0.2)))
 
 dataset_type = 'NuScenesDatasetRadar'
 data_root = 'data/nuscenes/'
@@ -208,23 +211,12 @@ train_pipeline = [
         pad_empty_sweeps=True,
         remove_close=True),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
-    # dict(type='ObjectSample', db_sampler=db_sampler),
-    # dict(
-    #     type='GlobalRotScaleTrans',
-    #     rot_range=[-0.3925, 0.3925],
-    #     scale_ratio_range=[0.95, 1.05],
-    #     translation_std=[0, 0, 0]),
-    # dict(
-    #     type='RandomFlip3D',
-    #     sync_2d=False,
-    #     flip_ratio_bev_horizontal=0.5,
-    #     flip_ratio_bev_vertical=0.5),
     dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
     dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
     dict(type='ObjectNameFilter', classes=class_names),
     dict(type='PointShuffle'),
-    dict(type='Normalize3D', **img_norm_cfg),
-    dict(type='Pad3D', size_divisor=32),
+    dict(type='NormalizeMultiviewImage', **img_norm_cfg),
+    dict(type='PadMultiViewImage', size_divisor=32),
     dict(type='DefaultFormatBundle3D', class_names=class_names),
     dict(type='Collect3D', keys=['points', 'gt_bboxes_3d', 'gt_labels_3d', 'img', 'radar'])
 ]
@@ -249,8 +241,8 @@ test_pipeline = [
         file_client_args=file_client_args,
         pad_empty_sweeps=True,
         remove_close=True),
-    dict(type='Normalize3D', **img_norm_cfg),
-    dict(type='Pad3D', size_divisor=32),
+    dict(type='NormalizeMultiviewImage', **img_norm_cfg),
+    dict(type='PadMultiViewImage', size_divisor=32),
     dict(
         type='MultiScaleFlipAug3D',
         img_scale=(1333, 800),
@@ -296,7 +288,7 @@ data = dict(
         # dataset=dict(
             type=dataset_type,
             data_root=data_root,
-            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_train.pkl',
+            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_train_radar.pkl',
             pipeline=train_pipeline,
             classes=class_names,
             modality=input_modality,
@@ -309,11 +301,11 @@ data = dict(
     val=dict(
             type=dataset_type,
             pipeline=test_pipeline, classes=class_names, modality=input_modality,
-            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_val.pkl',),
+            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_val_radar.pkl',),
     test=dict(
             type=dataset_type,
             pipeline=test_pipeline, classes=class_names, modality=input_modality,
-            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_val.pkl',),)
+            ann_file=data_root + 'radar_nuscenes_5sweeps_infos_val_radar.pkl',),)
 
 optimizer = dict(
     type='AdamW',
