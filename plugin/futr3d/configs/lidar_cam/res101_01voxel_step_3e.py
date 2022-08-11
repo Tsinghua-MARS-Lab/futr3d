@@ -42,7 +42,7 @@ model = dict(
         dcn=dict(type='DCNv2', deform_groups=1, fallback_on_stride=False),
         stage_with_dcn=(False, False, True, True)),
     img_neck=dict(
-        type='FPNV2',
+        type='FPN',
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         start_level=1,
@@ -51,8 +51,6 @@ model = dict(
         num_outs=4,
         norm_cfg=dict(type='BN2d'),
         relu_before_extra_convs=True),
-    # use
-    #refer https://github.com/open-mmlab/mmdetection3d/blob/master/configs/_base_/models/centerpoint_02pillar_second_secfpn_nus.py
     pts_voxel_layer=dict(
         max_num_points=10,
         point_cloud_range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0],
@@ -78,7 +76,7 @@ model = dict(
         norm_cfg=dict(type='BN2d', eps=1e-3, momentum=0.01),
         conv_cfg=dict(type='Conv2d', bias=False)),
     pts_neck=dict(
-        type='FPN',
+        type='FPNV2',
         norm_cfg=dict(type='BN2d', eps=1e-3, momentum=0.01),
         act_cfg=dict(type='ReLU'),
         in_channels=[128, 256],
@@ -302,7 +300,7 @@ eval_pipeline = [
 
 data = dict(
     samples_per_gpu=1,
-    workers_per_gpu=0,
+    workers_per_gpu=4,
     train=dict(
         #type='CBGSDataset',
         #dataset=dict(
@@ -355,3 +353,4 @@ runner = dict(type='EpochBasedRunner', max_epochs=3)
 
 find_unused_parameters = True
 
+load_from = 'pretrained/res101_01voxel_pretrained.pth'
