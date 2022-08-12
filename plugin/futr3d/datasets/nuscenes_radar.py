@@ -606,4 +606,4 @@ def lidar_nusc_box_to_global(info,
         box.rotate(pyquaternion.Quaternion(info['ego2global_rotation']))
         box.translate(np.array(info['ego2global_translation']))
         box_list.append(box)
-    return 
+    return box_list
