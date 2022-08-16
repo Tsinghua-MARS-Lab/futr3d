@@ -309,7 +309,7 @@ class FUTR3DCrossAtten(BaseModule):
         if self.use_Cam and self.use_LiDAR:
             output = torch.cat((img_output, pts_output), dim=2).permute(1, 0, 2)
             output = self.modality_fusion_layer(output).permute(1, 0, 2)
-        elif self.use_Cam and self.use_LiDAR:
+        elif self.use_Cam and self.use_Radar:
             output = torch.cat((img_output, radar_out), dim=2).permute(1, 0, 2)
             output = self.modality_fusion_layer(output).permute(1, 0, 2)
         elif self.use_Cam:
