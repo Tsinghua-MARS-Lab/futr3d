@@ -90,4 +90,4 @@ class RadarPointEncoder(nn.Module):
         out = torch.cat((x, masks), dim=-1)
 
         out = torch.cat((xy, out), dim=-1)
-        return 
+        return out
