@@ -80,4 +80,4 @@ For the implementation, we rely heavily on [MMCV](https://github.com/open-mmlab/
 }
 ```
 
-Contact: Xuanyao Chen at: `xuanyaochen18@fudan.edu.cn` or `ixyaochen@gmail.com`
+Contact: Xuanyao Chen at: `xuanyaochen19@fudan.edu.cn` or `ixyaochen@gmail.com`
