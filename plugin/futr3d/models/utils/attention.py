@@ -267,7 +267,7 @@ class FUTR3DCrossAtten(BaseModule):
             pts_output = self.pts_output_proj(pts_output)
         
         if self.use_Radar:
-            radar_feats, radar_mask = radar_feats[:, :, :-1], radar_feats[:, :, -1]
+            radar_feats, radar_mask = rad_feats[:, :, :-1], rad_feats[:, :, -1]
             radar_xy = radar_feats[:, :, :2]
             ref_xy = reference_points[:, :, :2]
             radar_feats = radar_feats[:, :, 2:]
