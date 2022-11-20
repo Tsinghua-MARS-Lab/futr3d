@@ -197,6 +197,8 @@ class FUTR3D(MVXTwoStageDetector):
     
     def simple_test(self, points, img_metas, img=None, radar=None, rescale=False):
         """Test function without augmentaiton."""
+        if isinstance(radar, list):
+            radar = radar[0]
         img_feats, pts_feats, rad_feats = self.extract_feat(
             points, img=img, radar=radar, img_metas=img_metas)
         if self.use_LiDAR:
