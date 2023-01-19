@@ -1,16 +1,36 @@
+import argparse
 import torch
 
-img_ckpt = torch.load('work_dirs/res101_900q_24e/epoch_24.pth')
-state_dict1 = img_ckpt['state_dict']
+def parse_args():
+    parser = argparse.ArgumentParser(description='fuse two checkpoints')
+    parser.add_argument('--img', help='the image model checkpoint path')
+    parser.add_argument('--lidar', help='the lidar model checkpoint path')
+    parser.add_argument('--out', help='the fused model path')
 
-pts_ckpt = torch.load('work_dirs/01voxel_q6_step_38e_resume/epoch_2.pth')
-state_dict2 = pts_ckpt['state_dict']
-# pts_head in camera checkpoint will be overwrite by lidar checkpoint
-state_dict1.update(state_dict2)
+    args = parser.parse_args()
 
-merged_state_dict = state_dict1
+    return args
 
 
-save_checkpoint = {'state_dict':merged_state_dict }
+def main():
+    args = parse_args()
+    img_path = args.img
+    pts_path = args.lidar
+    out = args.out
+    
+    img_ckpt = torch.load(img_path)
+    state_dict1 = img_ckpt['state_dict']
 
-torch.save(save_checkpoint, 'pretrained/lidar_5831_r101_3412.pth')
+    pts_ckpt = torch.load(pts_path)
+    state_dict2 = pts_ckpt['state_dict']
+
+    # pts_head in camera checkpoint will be overwrite by lidar checkpoint
+    state_dict1.update(state_dict2)
+
+    merged_state_dict = state_dict1
+    save_checkpoint = {'state_dict':merged_state_dict }
+
+    torch.save(save_checkpoint, out)
+
+if __name__ == '__main__':
+    main()
