@@ -1,8 +1,7 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.cnn import build_conv_layer, build_norm_layer
 from torch import nn
-import spconv.pytorch as spconv
-#from mmdet3d.ops import spconv
+
+from mmdet3d.ops import spconv
 from mmdet.models.backbones.resnet import BasicBlock, Bottleneck
 
 
@@ -46,21 +45,21 @@ class SparseBottleneck(Bottleneck, spconv.SparseModule):
         identity = x.features
 
         out = self.conv1(x)
-        out = out.replace_feature(self.bn1(out.features))
-        out = out.replace_feature(self.relu(out.features))
+        out.features = self.bn1(out.features)
+        out.features = self.relu(out.features)
 
         out = self.conv2(out)
-        out = out.replace_feature(self.bn2(out.features))
-        out = out.replace_feature(self.relu(out.features))
+        out.features = self.bn2(out.features)
+        out.features = self.relu(out.features)
 
         out = self.conv3(out)
-        out = out.replace_feature(self.bn3(out.features))
+        out.features = self.bn3(out.features)
 
         if self.downsample is not None:
             identity = self.downsample(x)
 
-        out = out.replace_feature(out.features + identity)
-        out = out.replace_feature(self.relu(out.features))
+        out.features += identity
+        out.features = self.relu(out.features)
 
         return out
 
@@ -106,17 +105,17 @@ class SparseBasicBlock(BasicBlock, spconv.SparseModule):
         assert x.features.dim() == 2, f'x.features.dim()={x.features.dim()}'
 
         out = self.conv1(x)
-        out = out.replace_feature(self.norm1(out.features))
-        out = out.replace_feature(self.relu(out.features))
+        out.features = self.norm1(out.features)
+        out.features = self.relu(out.features)
 
         out = self.conv2(out)
-        out = out.replace_feature(self.norm2(out.features))
+        out.features = self.norm2(out.features)
 
         if self.downsample is not None:
             identity = self.downsample(x)
 
-        out = out.replace_feature(out.features + identity)
-        out = out.replace_feature(self.relu(out.features))
+        out.features += identity
+        out.features = self.relu(out.features)
 
         return out
 

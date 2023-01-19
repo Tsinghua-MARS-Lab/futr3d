@@ -1,9 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.runner import auto_fp16
 from torch import nn as nn
-import spconv.pytorch as spconv
 from mmdet3d.ops import SparseBasicBlock, make_sparse_convmodule
-#from mmdet3d.ops import spconv as spconv
+from mmdet3d.ops import spconv as spconv
 from ..builder import MIDDLE_ENCODERS
 
 

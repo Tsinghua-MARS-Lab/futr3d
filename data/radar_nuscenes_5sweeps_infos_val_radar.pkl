@@ -1,0 +1,1 @@
+../../fusion-det/data/radar_nuscenes_5sweeps_infos_val_radar.pkl

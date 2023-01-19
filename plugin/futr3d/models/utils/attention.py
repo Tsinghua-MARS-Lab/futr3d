@@ -148,7 +148,7 @@ class FUTR3DCrossAtten(BaseModule):
                 nn.LayerNorm(self.embed_dims),
             )
 
-        self.position_encoder = nn.Sequential(
+        self.pos_encoder = nn.Sequential(
             nn.Linear(3, self.embed_dims),
             nn.LayerNorm(self.embed_dims),
             nn.ReLU(inplace=False),
@@ -318,7 +318,7 @@ class FUTR3DCrossAtten(BaseModule):
             output = pts_output
         reference_points_3d = reference_points.clone()
         # (num_query, bs, embed_dims)
-        return self.dropout(output) + inp_residual + self.position_encoder(inverse_sigmoid(reference_points_3d)).permute(1, 0, 2)
+        return self.dropout(output) + inp_residual + self.pos_encoder(inverse_sigmoid(reference_points_3d)).permute(1, 0, 2)
 
 
 def feature_sampling(mlvl_feats, reference_points, pc_range, img_metas):
