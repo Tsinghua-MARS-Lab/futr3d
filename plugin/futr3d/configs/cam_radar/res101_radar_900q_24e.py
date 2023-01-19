@@ -32,7 +32,6 @@ model = dict(
     img_backbone=dict(
         type='ResNet',
         with_cp=False,
-        #pretrained='open-mmlab://detectron2/resnet101_caffe',
         depth=101,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
@@ -48,7 +47,6 @@ model = dict(
         out_channels=256,
         start_level=1,
         add_extra_convs='on_output',
-        #extra_convs_on_inputs=False,  # use P5
         num_outs=4,
         norm_cfg=dict(type='BN2d'),
         relu_before_extra_convs=True),
@@ -288,7 +286,7 @@ data = dict(
         # dataset=dict(
             type=dataset_type,
             data_root=data_root,
-            ann_file='data/' + 'radar_nuscenes_5sweeps_infos_train.pkl',
+            ann_file=data_root + 'nuscenes_5sweeps_infos_train_radar.pkl',
             pipeline=train_pipeline,
             classes=class_names,
             modality=input_modality,
@@ -301,11 +299,11 @@ data = dict(
     val=dict(
             type=dataset_type,
             pipeline=test_pipeline, classes=class_names, modality=input_modality,
-            ann_file='data/' + 'radar_nuscenes_5sweeps_infos_val.pkl',),
+            ann_file=data_root + 'nuscenes_5sweeps_infos_val_radar.pkl',),
     test=dict(
             type=dataset_type,
             pipeline=test_pipeline, classes=class_names, modality=input_modality,
-            ann_file='data/' + 'radar_nuscenes_5sweeps_infos_val.pkl',),)
+            ann_file=data_root + 'nuscenes_5sweeps_infos_val_radar.pkl',),)
 
 optimizer = dict(
     type='AdamW',
@@ -331,6 +329,5 @@ evaluation = dict(interval=2, pipeline=eval_pipeline)
 runner = dict(type='EpochBasedRunner', max_epochs=24)
 
 find_unused_parameters = False
-#fp16 = dict(loss_scale=512.)
 
-load_from='pretrained/cam_only.pth'
+load_from = 'pretrained/detr3d.pth'

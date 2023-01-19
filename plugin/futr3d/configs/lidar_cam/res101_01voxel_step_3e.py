@@ -30,7 +30,6 @@ model = dict(
     use_grid_mask=True, # use grid mask
     img_backbone=dict(
         type='ResNet',
-        #pretrained='open-mmlab://detectron2/resnet101_caffe',
         with_cp=True,
         depth=101,
         num_stages=4,
@@ -47,7 +46,6 @@ model = dict(
         out_channels=256,
         start_level=1,
         add_extra_convs='on_output',
-        #extra_convs_on_inputs=False,  # use P5
         num_outs=4,
         norm_cfg=dict(type='BN2d'),
         relu_before_extra_convs=True),
@@ -309,7 +307,7 @@ data = dict(
         #dataset=dict(
             type=dataset_type,
             data_root=data_root,
-            ann_file='data/' + 'nuscenes_infos_train.pkl',
+            ann_file=data_root + 'nuscenes_infos_train.pkl',
             pipeline=train_pipeline,
             classes=class_names,
             modality=input_modality,
@@ -319,8 +317,8 @@ data = dict(
             # and box_type_3d='Depth' in sunrgbd and scannet dataset.
             box_type_3d='LiDAR'),
      #),
-    val=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality, ann_file='data/' + 'nuscenes_infos_val.pkl'),
-    test=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality, ann_file='data/' + 'nuscenes_infos_val.pkl'))
+    val=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality),
+    test=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality))
 
 
 optimizer = dict(
@@ -337,7 +335,6 @@ optimizer = dict(
         }),
     weight_decay=0.01)
 
-# max_norm=10 is better for SECOND
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 
 
@@ -356,4 +353,4 @@ runner = dict(type='EpochBasedRunner', max_epochs=3)
 
 find_unused_parameters = False
 
-load_from = 'pretrained/lidar_5831_r101_3412.pth'
+load_from = 'pretrained/lidar_cam.pth'

@@ -332,21 +332,12 @@ data = dict(
 optimizer = dict(
     type='AdamW',
     lr=2e-4,
-    paramwise_cfg=dict(
-        custom_keys={
-            'img_backbone': dict(lr_mult=0.1),
-            #'offsets': dict(lr_mult=0.1),
-            #'reference_points': dict(lr_mult=0.1)
-            #'pts_backbone': dict(lr_mult=0.1),
-            #'pts_voxel_encoder': dict(lr_mult=0.1),
-            #'pts_middle_encoder': dict(lr_mult=0.1),
-        }),
     weight_decay=0.01)
 
 # max_norm=10 is better for SECOND
 optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
-custom_hooks = [dict(type='FadeOjectSampleHook', num_last_epochs=5)]
+custom_hooks = [dict(type='FadeOjectSampleHook', num_last_epochs=2)]
 
 lr_config = dict(
     policy='step',

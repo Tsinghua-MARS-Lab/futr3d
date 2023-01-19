@@ -47,9 +47,7 @@ model = dict(
         out_channels=256,
         start_level=1,
         add_extra_convs='on_output',
-        #extra_convs_on_inputs=False,  # use P5
         num_outs=4,
-        #norm_cfg=dict(type='BN2d'),
         relu_before_extra_convs=True),
     pts_voxel_layer=None,
     pts_voxel_encoder=None,
@@ -189,10 +187,8 @@ train_pipeline = [
     dict(type='LoadMultiViewImageFromFiles', to_float32=True),
     dict(type='PhotoMetricDistortionMultiViewImage'),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
-    #dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
     dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
     dict(type='ObjectNameFilter', classes=class_names),
-    #dict(type='PointShuffle'),
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
     dict(type='PadMultiViewImage', size_divisor=32),
     dict(type='DefaultFormatBundle3D', class_names=class_names),
@@ -245,22 +241,20 @@ data = dict(
     samples_per_gpu=1,
     workers_per_gpu=4,
     train=dict(
-        #type='CBGSDataset',
-        #dataset=dict(
-            type=dataset_type,
-            data_root=data_root,
-            ann_file='data/' + 'nuscenes_infos_train.pkl',
-            pipeline=train_pipeline,
-            classes=class_names,
-            modality=input_modality,
-            test_mode=False,
-            use_valid_flag=True,
-            # we use box_type_3d='LiDAR' in kitti and nuscenes dataset
-            # and box_type_3d='Depth' in sunrgbd and scannet dataset.
-            box_type_3d='LiDAR'),
+        type=dataset_type,
+        data_root=data_root,
+        ann_file=data_root + 'nuscenes_infos_train.pkl',
+        pipeline=train_pipeline,
+        classes=class_names,
+        modality=input_modality,
+        test_mode=False,
+        use_valid_flag=True,
+        # we use box_type_3d='LiDAR' in kitti and nuscenes dataset
+        # and box_type_3d='Depth' in sunrgbd and scannet dataset.
+        box_type_3d='LiDAR'),
      #),
-    val=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality, ann_file='data/' + 'nuscenes_infos_val.pkl',),
-    test=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality, ann_file='data/' + 'nuscenes_infos_val.pkl',))
+    val=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality),
+    test=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality))
 
 
 optimizer = dict(
@@ -288,6 +282,5 @@ evaluation = dict(interval=2, pipeline=eval_pipeline)
 runner = dict(type='EpochBasedRunner', max_epochs=24)
 
 find_unused_parameters = False
-load_from = 'pretrained/detr3d.pth'
 
-checkpoint_config = dict(interval=1, max_keep_ckpts=6)
+checkpoint_config = dict(interval=1)
