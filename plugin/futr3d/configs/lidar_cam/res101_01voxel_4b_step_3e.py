@@ -1,6 +1,6 @@
 _base_ = [
-    '../../../configs/_base_/datasets/nus-3d.py',
-    '../../../configs/_base_/default_runtime.py'
+    '../../../../configs/_base_/datasets/nus-3d.py',
+    '../../../../configs/_base_/default_runtime.py'
 ]
 plugin=True
 plugin_dir='plugin/futr3d/'
@@ -78,7 +78,7 @@ model = dict(
         norm_cfg=dict(type='BN2d', eps=1e-3, momentum=0.01),
         conv_cfg=dict(type='Conv2d', bias=False)),
     pts_neck=dict(
-        type='FPNV2',
+        type='FPN',
         norm_cfg=dict(type='BN2d', eps=1e-3, momentum=0.01),
         act_cfg=dict(type='ReLU'),
         in_channels=[128, 256],
@@ -313,7 +313,7 @@ eval_pipeline = [
 
 data = dict(
     samples_per_gpu=1,
-    workers_per_gpu=4,
+    workers_per_gpu=0,
     train=dict(
         #type='CBGSDataset',
         #dataset=dict(
@@ -366,4 +366,4 @@ runner = dict(type='EpochBasedRunner', max_epochs=3)
 
 find_unused_parameters = True
 
-load_from = 'pretrained/res101_01voxel_4beam_pretrained.pth'
+#load_from = '/public/MARS/models/surrdet/pts_img_models/img_3473_01voxel_q6_epoch_38_5931.pth'

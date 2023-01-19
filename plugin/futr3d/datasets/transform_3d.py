@@ -1,8 +1,14 @@
 import numpy as np
 from numpy import random
 import mmcv
+import cv2
 from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines import RandomFlip
+from mmcv.utils import build_from_cfg
+from mmdet3d.datasets.builder import OBJECTSAMPLERS
+from mmdet3d.core.bbox import (CameraInstance3DBoxes, DepthInstance3DBoxes,
+                               LiDARInstance3DBoxes, box_np_ops)
+
 
 @PIPELINES.register_module()
 class PadMultiViewImage(object):
@@ -564,4 +570,197 @@ class PointGlobalRotScaleTrans(object):
         repr_str += f' scale_ratio_range={self.scale_ratio_range},'
         repr_str += f' translation_std={self.translation_std},'
         repr_str += f' shift_height={self.shift_height})'
+        return repr_str
+
+
+@PIPELINES.register_module()
+class UnifiedObjectSample(object):
+    """Sample GT objects to the data.
+    Args:
+        db_sampler (dict): Config dict of the database sampler.
+        sample_2d (bool): Whether to also paste 2D image patch to the images
+            This should be true when applying multi-modality cut-and-paste.
+            Defaults to False.
+    """
+
+    def __init__(self, db_sampler, sample_2d=False, sample_method='depth', modify_points=False):
+        self.sampler_cfg = db_sampler
+        self.sample_2d = sample_2d
+        self.sample_method = sample_method
+        self.modify_points = modify_points
+        if 'type' not in db_sampler.keys():
+            db_sampler['type'] = 'DataBaseSampler'
+        self.db_sampler = build_from_cfg(db_sampler, OBJECTSAMPLERS)
+
+    @staticmethod
+    def remove_points_in_boxes(points, boxes):
+        """Remove the points in the sampled bounding boxes.
+        Args:
+            points (:obj:`BasePoints`): Input point cloud array.
+            boxes (np.ndarray): Sampled ground truth boxes.
+        Returns:
+            np.ndarray: Points with those in the boxes removed.
+        """
+        masks = box_np_ops.points_in_rbbox(points.coord.numpy(), boxes)
+        points = points[np.logical_not(masks.any(-1))]
+        return points
+
+    def __call__(self, input_dict):
+        """Call function to sample ground truth objects to the data.
+        Args:
+            input_dict (dict): Result dict from loading pipeline.
+        Returns:
+            dict: Results after object sampling augmentation, \
+                'points', 'gt_bboxes_3d', 'gt_labels_3d' keys are updated \
+                in the result dict.
+        """
+        gt_bboxes_3d = input_dict['gt_bboxes_3d']
+        gt_labels_3d = input_dict['gt_labels_3d']
+
+        # change to float for blending operation
+        points = input_dict['points']
+        if self.sample_2d:
+            # Assume for now 3D & 2D bboxes are the same
+            sampled_dict = self.db_sampler.sample_all(
+                gt_bboxes_3d.tensor.numpy(),
+                gt_labels_3d,
+                with_img=True)
+        else:
+            sampled_dict = self.db_sampler.sample_all(
+                gt_bboxes_3d.tensor.numpy(), gt_labels_3d, with_img=False)
+
+        if sampled_dict is not None:
+            sampled_gt_bboxes_3d = sampled_dict['gt_bboxes_3d']
+            sampled_points = sampled_dict['points']
+            sampled_points_idx = sampled_dict["points_idx"]
+            sampled_gt_labels = sampled_dict['gt_labels_3d']
+
+            gt_labels_3d = np.concatenate([gt_labels_3d, sampled_gt_labels],
+                                          axis=0)
+            gt_bboxes_3d = gt_bboxes_3d.new_box(
+                np.concatenate(
+                    [gt_bboxes_3d.tensor.numpy(), sampled_gt_bboxes_3d]))
+
+            points = self.remove_points_in_boxes(points, sampled_gt_bboxes_3d)
+            points_idx = -1 * np.ones(len(points), dtype=np.int)
+            # check the points dimension
+            # points = points.cat([sampled_points, points])
+            points = points.cat([points, sampled_points])
+            points_idx = np.concatenate([points_idx, sampled_points_idx], axis=0)
+
+            if self.sample_2d:
+                imgs = input_dict['img']
+                lidar2img = input_dict['lidar2img']
+                sampled_img = sampled_dict['images']
+                sampled_num = len(sampled_gt_bboxes_3d)
+                imgs, points_keep = self.unified_sample(imgs, lidar2img, 
+                                            points.tensor.numpy(), 
+                                            points_idx, gt_bboxes_3d.corners.numpy(), 
+                                            sampled_img, sampled_num)
+                
+                input_dict['img'] = imgs
+
+                if self.modify_points:
+                    points = points[points_keep]
+
+        input_dict['gt_bboxes_3d'] = gt_bboxes_3d
+        input_dict['gt_labels_3d'] = gt_labels_3d.astype(np.long)
+        input_dict['points'] = points
+
+        return input_dict
+
+    def unified_sample(self, imgs, lidar2img, points, points_idx, bboxes_3d, sampled_img, sampled_num):
+        # for boxes
+        bboxes_3d = np.concatenate([bboxes_3d, np.ones_like(bboxes_3d[..., :1])], -1)
+        is_raw = np.ones(len(bboxes_3d))
+        is_raw[-sampled_num:] = 0
+        is_raw = is_raw.astype(bool)
+        raw_num = len(is_raw)-sampled_num
+        # for point cloud
+        points_3d = points[:,:4].copy()
+        points_3d[:,-1] = 1
+        points_keep = np.ones(len(points_3d)).astype(np.bool)
+        new_imgs = imgs
+
+        assert len(imgs)==len(lidar2img) and len(sampled_img)==sampled_num
+        for _idx, (_img, _lidar2img) in enumerate(zip(imgs, lidar2img)):
+            coord_img = bboxes_3d @ _lidar2img.T
+            coord_img[...,:2] /= coord_img[...,2,None]
+            depth = coord_img[...,2]
+            img_mask = (depth > 0).all(axis=-1)
+            img_count = img_mask.nonzero()[0]
+            if img_mask.sum() == 0:
+                continue
+            depth = depth.mean(1)[img_mask]
+            coord_img = coord_img[...,:2][img_mask]
+            minxy = np.min(coord_img, axis=-2)
+            maxxy = np.max(coord_img, axis=-2)
+            bbox = np.concatenate([minxy, maxxy], axis=-1).astype(int)
+            bbox[:,0::2] = np.clip(bbox[:,0::2], a_min=0, a_max=_img.shape[1]-1)
+            bbox[:,1::2] = np.clip(bbox[:,1::2], a_min=0, a_max=_img.shape[0]-1)
+            img_mask = ((bbox[:,2:]-bbox[:,:2]) > 1).all(axis=-1)
+            if img_mask.sum() == 0:
+                continue
+            depth = depth[img_mask]
+            if 'depth' in self.sample_method:
+                paste_order = depth.argsort()
+                paste_order = paste_order[::-1]
+            else:
+                paste_order = np.arange(len(depth), dtype=np.int64)
+            img_count = img_count[img_mask][paste_order]
+            bbox = bbox[img_mask][paste_order]
+
+            paste_mask = -255 * np.ones(_img.shape[:2], dtype=np.int)
+            fg_mask = np.zeros(_img.shape[:2], dtype=np.int)
+            # first crop image from raw image
+            raw_img = []
+            for _count, _box in zip(img_count, bbox):
+                if is_raw[_count]:
+                    raw_img.append(_img[_box[1]:_box[3],_box[0]:_box[2]])
+
+            # then stitch the crops to raw image
+            for _count, _box in zip(img_count, bbox):
+                if is_raw[_count]:
+                    _img[_box[1]:_box[3],_box[0]:_box[2]] = raw_img.pop(0)
+                    fg_mask[_box[1]:_box[3],_box[0]:_box[2]] = 1
+                else:
+                    img_crop = sampled_img[_count-raw_num]
+                    if len(img_crop)==0: continue
+                    img_crop = cv2.resize(img_crop, tuple(_box[[2,3]]-_box[[0,1]]))
+                    _img[_box[1]:_box[3],_box[0]:_box[2]] = img_crop
+
+                paste_mask[_box[1]:_box[3],_box[0]:_box[2]] = _count
+            
+            new_imgs[_idx] = _img
+
+            # calculate modify mask
+            if self.modify_points:
+                points_img = points_3d @ _lidar2img.T
+                points_img[:,:2] /= points_img[:,2,None]
+                depth = points_img[:,2]
+                img_mask = depth > 0
+                if img_mask.sum() == 0:
+                    continue
+                img_mask = (points_img[:,0] > 0) & (points_img[:,0] < _img.shape[1]) & \
+                           (points_img[:,1] > 0) & (points_img[:,1] < _img.shape[0]) & img_mask
+                points_img = points_img[img_mask].astype(int)
+                new_mask = paste_mask[points_img[:,1], points_img[:,0]]==(points_idx[img_mask]+raw_num)
+                raw_fg = (fg_mask == 1) & (paste_mask >= 0) & (paste_mask < raw_num)
+                raw_bg = (fg_mask == 0) & (paste_mask < 0)
+                raw_mask = raw_fg[points_img[:,1], points_img[:,0]] | raw_bg[points_img[:,1], points_img[:,0]]
+                keep_mask = new_mask | raw_mask
+                points_keep[img_mask] = points_keep[img_mask] & keep_mask
+
+        return new_imgs, points_keep
+
+    def __repr__(self):
+        """str: Return a string that describes the module."""
+        repr_str = self.__class__.__name__
+        repr_str += f' sample_2d={self.sample_2d},'
+        repr_str += f' data_root={self.sampler_cfg.data_root},'
+        repr_str += f' info_path={self.sampler_cfg.info_path},'
+        repr_str += f' rate={self.sampler_cfg.rate},'
+        repr_str += f' prepare={self.sampler_cfg.prepare},'
+        repr_str += f' classes={self.sampler_cfg.classes},'
+        repr_str += f' sample_groups={self.sampler_cfg.sample_groups}'
         return repr_str

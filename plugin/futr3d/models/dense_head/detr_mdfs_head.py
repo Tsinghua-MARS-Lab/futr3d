@@ -338,12 +338,6 @@ class DeformableFUTR3DHead(DETRHead):
                 bbox_preds[isnotnan, :self.code_size], 
                 normalized_bbox_targets[isnotnan, :self.code_size], 
                 bbox_weights[isnotnan, :self.code_size], avg_factor=num_total_pos)
-        # loss_bbox_vel = self.loss_bbox(
-                # bbox_preds[isnotnan, 8:], normalized_bbox_targets[isnotnan, 8:], bbox_weights[isnotnan, 8:], avg_factor=num_total_pos)
-        # loss_bbox = loss_bbox + loss_bbox_vel * 0.2
-
-        #loss_iou = self.loss_iou(
-        #    denormalize_bbox(bbox_preds, self.pc_range)[:, :7], bbox_targets[:, :7], bbox_weights[:, 0], avg_factor=num_total_pos)
 
         loss_cls = torch.nan_to_num(loss_cls)
         loss_bbox = torch.nan_to_num(loss_bbox)

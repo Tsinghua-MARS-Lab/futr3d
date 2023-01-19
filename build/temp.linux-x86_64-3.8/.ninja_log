@@ -1,0 +1,27 @@
+# ninja log v5
+1	3142	1663132161145748229	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/iou3d/src/iou3d_kernel.o	22cbe4d0820f45f3
+1	21998	1663132179914062867	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/iou3d/src/iou3d.o	d67f99177d732681
+2	13678	1663132197746360819	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/voxelization_cpu.o	b01fdb48ba73074b
+1	14839	1663132198938380861	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/scatter_points_cuda.o	7c88080ac3ecbb0f
+1	15310	1663132198210368462	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/scatter_points_cpu.o	af238fa628ac228a
+1	15326	1663132199314387264	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/voxelization.o	bb1db0645ab96131
+2	15847	1663132199942397959	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/voxelization_cuda.o	683ae6b49f86361d
+2	11699	1663132213682627962	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/roiaware_pool3d/src/points_in_boxes_cpu.o	42a57d26deb42999
+2	13163	1663132216122668517	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/roiaware_pool3d/src/roiaware_pool3d_kernel.o	e00216ad3dc8af18
+2	14452	1663132217414690113	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/roiaware_pool3d/src/points_in_boxes_cuda.o	9b02ba543b47d51d
+2	14891	1663132217798696269	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/roiaware_pool3d/src/roiaware_pool3d.o	bff652bf6509baee
+1	407	1663132219290721471	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/ball_query/src/ball_query_cuda.o	291bff1f413b9295
+1	15043	1663132233814964826	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/ball_query/src/ball_query.o	f8aa4bb0fe232d03
+1	408	1663132235342989848	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/knn/src/knn_cuda.o	13c7c137970c51d3
+0	14990	1663132249919234089	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/knn/src/knn.o	8fff69582efdc7f3
+1	13011	1663132263715465046	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/paconv/src/assign_score_withk_cuda.o	93bd9fdfd1c585ac
+1	14763	1663132265459494295	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/paconv/src/assign_score_withk.o	80602b026aa91cf
+1	393	1663132266835517182	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/group_points/src/group_points_cuda.o	cae97c63e8dffa42
+1	14878	1663132281315759786	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/group_points/src/group_points.o	aec779dc9e0cbe14
+2	716	1663132283011787675	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/interpolate/src/three_nn_cuda.o	d8ccd979a74914f7
+2	717	1663132283011787675	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/interpolate/src/three_interpolate_cuda.o	2be2a41c03b5a33e
+2	15141	1663132297432029255	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/interpolate/src/interpolate.o	25254b6a46442193
+1	935	1663132299272060323	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/furthest_point_sample/src/furthest_point_sample_cuda.o	f0d0b63a84a91f0c
+0	14712	1663132312972289913	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/furthest_point_sample/src/furthest_point_sample.o	350472b22ec9be52
+1	376	1663132314484314664	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/gather_points/src/gather_points_cuda.o	cf8d61a246638dd
+1	14696	1663132328792554340	/NFS/home/xuanyao/fusion-det/build/temp.linux-x86_64-3.8/mmdet3d/ops/gather_points/src/gather_points.o	2b2ffdc5568adb7b

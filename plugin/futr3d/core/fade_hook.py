@@ -1,6 +1,7 @@
 from mmcv.parallel import is_module_wrapper
 from mmcv.runner.hooks import HOOKS, Hook
 from mmdet3d.datasets.pipelines import ObjectSample
+from plugin.futr3d.datasets.transform_3d import UnifiedObjectSample
 
 @HOOKS.register_module()
 class FadeOjectSampleHook(Hook):
@@ -44,6 +45,9 @@ class FadeOjectSampleHook(Hook):
             
             for transform in transforms:
                 if isinstance(transform, ObjectSample):
+                    transforms.remove(transform)
+                    break
+                if isinstance(transform, UnifiedObjectSample):
                     transforms.remove(transform)
                     break
             

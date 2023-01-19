@@ -707,7 +707,7 @@ class LoadRadarPointsMultiSweeps(object):
         points = np.concatenate(points_sweep_list, axis=0)
         
         points = points[:, self.use_dim]
-
+        
         points[:, 0:1] = (points[:, 0:1] - self.pc_range[0]) / (self.pc_range[3] - self.pc_range[0])
         points[:, 1:2] = (points[:, 1:2] - self.pc_range[1]) / (self.pc_range[4] - self.pc_range[1])
         points[:, 2:3] = (points[:, 2:3] - self.pc_range[2]) / (self.pc_range[5] - self.pc_range[2])
@@ -717,7 +717,7 @@ class LoadRadarPointsMultiSweeps(object):
         else:
             mask = np.ones((points.shape[0], points.shape[1]), 
                         dtype=points.dtype)
-        
+         
         points = np.concatenate((points, mask), axis=-1)
 
         results['radar'] = points.astype(np.float32)

@@ -1,6 +1,6 @@
 _base_ = [
-    '../../../configs/_base_/datasets/nus-3d.py',
-    '../../../configs/_base_/default_runtime.py'
+    '../../../../configs/_base_/datasets/nus-3d.py',
+    '../../../../configs/_base_/default_runtime.py'
 ]
 plugin=True
 plugin_dir='plugin/futr3d/'

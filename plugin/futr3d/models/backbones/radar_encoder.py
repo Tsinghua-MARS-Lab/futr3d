@@ -86,8 +86,6 @@ class RadarPointEncoder(nn.Module):
             x = feat_layer(x)
         
         out = x * masks
-
         out = torch.cat((x, masks), dim=-1)
-
         out = torch.cat((xy, out), dim=-1)
         return out

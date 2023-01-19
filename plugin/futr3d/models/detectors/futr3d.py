@@ -1,5 +1,6 @@
 import time
 import torch
+import torchvision
 import numpy as np
 from mmdet3d.core import bbox3d2result, merge_aug_bboxes_3d
 from mmdet.models import DETECTORS
@@ -64,6 +65,7 @@ class FUTR3D(MVXTwoStageDetector):
     def extract_img_feat(self, img, img_metas):
         """Extract features of images."""
         B = img.size(0)
+        
         if self.with_img_backbone and img is not None:
             input_shape = img.shape[-2:]
             # update real input shape of each single img
@@ -184,6 +186,16 @@ class FUTR3D(MVXTwoStageDetector):
         losses.update(losses_pts)
         return losses
 
+    def forward_test(self, img_metas, img=None, points=None, radar=None, **kwargs):
+        for var, name in [(img_metas, 'img_metas')]:
+            if not isinstance(var, list):
+                raise TypeError('{} must be a list, but got {}'.format(
+                    name, type(var)))
+        img = [img] if img is None else img
+        points = [points] if points is None else points
+        radar = [radar] if radar is None else radar
+        return self.simple_test(img_metas[0], img[0], points[0], radar[0], **kwargs)
+
     def simple_test_mdfs(self, pts_feats, img_feats, rad_feats, img_metas, rescale=False):
         """Test function of point cloud branch."""
         outs = self.pts_bbox_head(pts_feats, img_feats, rad_feats, img_metas)
@@ -195,12 +207,12 @@ class FUTR3D(MVXTwoStageDetector):
         ]
         return bbox_results
     
-    def simple_test(self, points, img_metas, img=None, radar=None, rescale=False):
+    def simple_test(self, img_metas, img=None, points=None, radar=None, rescale=False):
         """Test function without augmentaiton."""
-        if isinstance(radar, list):
-            radar = radar[0]
+        #if isinstance(radar, list):
+        #    radar = radar[0]
         img_feats, pts_feats, rad_feats = self.extract_feat(
-            points, img=img, radar=radar, img_metas=img_metas)
+            points=points, img=img, radar=radar, img_metas=img_metas)
         if self.use_LiDAR:
             pts_feats = [feat.unsqueeze(dim=1) for feat in pts_feats]
 

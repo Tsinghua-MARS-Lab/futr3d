@@ -1,6 +1,6 @@
 _base_ = [
-    '../../../configs/_base_/datasets/nus-3d.py',
-    '../../../configs/_base_/default_runtime.py'
+    '../../../../configs/_base_/datasets/nus-3d.py',
+    '../../../../configs/_base_/default_runtime.py'
 ]
 plugin=True
 plugin_dir='plugin/futr3d/'
@@ -78,7 +78,7 @@ model = dict(
         norm_cfg=dict(type='BN2d', eps=1e-3, momentum=0.01),
         conv_cfg=dict(type='Conv2d', bias=False)),
     pts_neck=dict(
-        type='FPNV2',
+        type='FPN',
         norm_cfg=dict(type='BN2d', eps=1e-3, momentum=0.01),
         act_cfg=dict(type='ReLU'),
         in_channels=[128, 256],
@@ -238,132 +238,4 @@ train_pipeline = [
         remove_close=True),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
     dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
-    dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
-    dict(type='ObjectNameFilter', classes=class_names),
-    dict(type='PointShuffle'),
-    dict(type='NormalizeMultiviewImage', **img_norm_cfg),
-    dict(type='PadMultiViewImage', size_divisor=32),
-    dict(type='DefaultFormatBundle3D', class_names=class_names),
-    dict(type='Collect3D', keys=['points', 'gt_bboxes_3d', 'gt_labels_3d', 'img'])
-]
-test_pipeline = [
-    dict(
-        type='LoadReducedPointsFromFile',
-        coord_type='LIDAR',
-        load_dim=5,
-        use_dim=5,
-        reduce_beams_to=1,
-        chosen_beam_id=[9],
-        file_client_args=file_client_args),
-    dict(type='LoadMultiViewImageFromFiles'),
-    dict(
-        type='LoadReducedPointsFromMultiSweeps',
-        sweeps_num=9,
-        use_dim=[0, 1, 2, 3, 4],
-        reduce_beams_to=1,
-        chosen_beam_id=[9],
-        file_client_args=file_client_args,
-        pad_empty_sweeps=True,
-        remove_close=True),
-    dict(type='NormalizeMultiviewImage', **img_norm_cfg),
-    dict(type='PadMultiViewImage', size_divisor=32),
-    #revise
-    dict(
-        type='MultiScaleFlipAug3D',
-        img_scale=(1333, 800),
-        pts_scale_ratio=1,
-        flip=False,
-        transforms=[
-            dict(
-                type='GlobalRotScaleTrans',
-                rot_range=[0, 0],
-                scale_ratio_range=[1., 1.],
-                translation_std=[0, 0, 0]),
-            dict(type='RandomFlip3D'),
-            dict(
-                type='DefaultFormatBundle3D',
-                class_names=class_names,
-                with_label=False),
-            dict(type='Collect3D', keys=['points', 'img'])
-        ])
-]
-
-# construct a pipeline for data and gt loading in show function
-# please keep its loading function consistent with test_pipeline (e.g. client)
-eval_pipeline = [
-    dict(
-        type='LoadPointsFromFile',
-        coord_type='LIDAR',
-        load_dim=5,
-        use_dim=5,
-        file_client_args=file_client_args),
-    dict(
-        type='LoadPointsFromMultiSweeps',
-        sweeps_num=9,
-        use_dim=[0, 1, 2, 3, 4],
-        file_client_args=file_client_args,
-        pad_empty_sweeps=True,
-        remove_close=True),
-    dict(
-        type='DefaultFormatBundle3D',
-        class_names=class_names,
-        with_label=False),
-    dict(type='Collect3D', keys=['points'])
-]
-
-data = dict(
-    samples_per_gpu=1,
-    workers_per_gpu=4,
-    train=dict(
-        #type='CBGSDataset',
-        #dataset=dict(
-            type=dataset_type,
-            data_root=data_root,
-            ann_file=data_root + 'nuscenes_infos_train.pkl',
-            pipeline=train_pipeline,
-            classes=class_names,
-            modality=input_modality,
-            test_mode=False,
-            use_valid_flag=True,
-            # we use box_type_3d='LiDAR' in kitti and nuscenes dataset
-            # and box_type_3d='Depth' in sunrgbd and scannet dataset.
-            box_type_3d='LiDAR'),
-     #),
-    val=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality),
-    test=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality))
-
-
-optimizer = dict(
-    type='AdamW',
-    lr=2e-4,
-    paramwise_cfg=dict(
-        custom_keys={
-            'img_backbone': dict(lr_mult=0.1),
-            #'offsets': dict(lr_mult=0.1),
-            #'reference_points': dict(lr_mult=0.1)
-            'pts_backbone': dict(lr_mult=0.1),
-            'pts_voxel_encoder': dict(lr_mult=0.1),
-            'pts_middle_encoder': dict(lr_mult=0.1),
-        }),
-    weight_decay=0.01)
-
-# max_norm=10 is better for SECOND
-optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
-
-
-lr_config = dict(
-    policy='step',
-    warmup='linear',
-    warmup_iters=500,
-    warmup_ratio=1.0 / 3,
-    step=[2])
-
-
-total_epochs = 3
-evaluation = dict(interval=1, pipeline=eval_pipeline)
-
-runner = dict(type='EpochBasedRunner', max_epochs=3)
-
-find_unused_parameters = True
-
-load_from = 'pretrained/res101_01voxel_1beam_pretrained.pth'
+    dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_

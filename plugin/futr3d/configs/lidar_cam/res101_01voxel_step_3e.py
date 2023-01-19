@@ -1,6 +1,6 @@
 _base_ = [
-    '../../../_base_/datasets/nus-3d.py',
-    '../../../_base_/default_runtime.py'
+    '../../../../configs/_base_/datasets/nus-3d.py',
+    '../../../../configs/_base_/default_runtime.py'
 ]
 plugin=True
 plugin_dir='plugin/futr3d/'
@@ -51,6 +51,8 @@ model = dict(
         num_outs=4,
         norm_cfg=dict(type='BN2d'),
         relu_before_extra_convs=True),
+    # use
+    #refer https://github.com/open-mmlab/mmdetection3d/blob/master/configs/_base_/models/centerpoint_02pillar_second_secfpn_nus.py
     pts_voxel_layer=dict(
         max_num_points=10,
         point_cloud_range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0],
@@ -219,7 +221,8 @@ train_pipeline = [
         load_dim=5,
         use_dim=5,
         file_client_args=file_client_args),
-    dict(type='LoadMultiViewImageFromFiles'),
+    dict(type='LoadMultiViewImageFromFiles', to_float32=True),
+    dict(type='PhotoMetricDistortionMultiViewImage'),
     dict(
         type='LoadPointsFromMultiSweeps',
         sweeps_num=9,
@@ -244,7 +247,7 @@ test_pipeline = [
         load_dim=5,
         use_dim=5,
         file_client_args=file_client_args),
-    dict(type='LoadMultiViewImageFromFiles'),
+    dict(type='LoadMultiViewImageFromFiles', to_float32=True),
     dict(
         type='LoadPointsFromMultiSweeps',
         sweeps_num=9,
@@ -306,7 +309,7 @@ data = dict(
         #dataset=dict(
             type=dataset_type,
             data_root=data_root,
-            ann_file=data_root + 'nuscenes_infos_train.pkl',
+            ann_file='data/' + 'nuscenes_infos_train.pkl',
             pipeline=train_pipeline,
             classes=class_names,
             modality=input_modality,
@@ -316,8 +319,8 @@ data = dict(
             # and box_type_3d='Depth' in sunrgbd and scannet dataset.
             box_type_3d='LiDAR'),
      #),
-    val=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality),
-    test=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality))
+    val=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality, ann_file='data/' + 'nuscenes_infos_val.pkl'),
+    test=dict(pipeline=test_pipeline, classes=class_names, modality=input_modality, ann_file='data/' + 'nuscenes_infos_val.pkl'))
 
 
 optimizer = dict(
@@ -335,7 +338,7 @@ optimizer = dict(
     weight_decay=0.01)
 
 # max_norm=10 is better for SECOND
-optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 
 
 lr_config = dict(
@@ -351,6 +354,6 @@ evaluation = dict(interval=1, pipeline=eval_pipeline)
 
 runner = dict(type='EpochBasedRunner', max_epochs=3)
 
-find_unused_parameters = True
+find_unused_parameters = False
 
-load_from = 'pretrained/res101_01voxel_pretrained.pth'
+load_from = 'pretrained/lidar_5831_r101_3412.pth'

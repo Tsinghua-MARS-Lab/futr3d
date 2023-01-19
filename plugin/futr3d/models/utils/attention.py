@@ -123,11 +123,11 @@ class FUTR3DCrossAtten(BaseModule):
         if self.use_Cam:
             self.attention_weights = nn.Linear(embed_dims,
                                            num_cams*num_levels*num_points)
-            self.img_output_proj = nn.Linear(embed_dims, embed_dims)
+            self.output_proj = nn.Linear(embed_dims, embed_dims)
             self.fused_embed += embed_dims
-        
+
         if self.use_LiDAR:
-            self.pts_attention_weights = nn.Linear(embed_dims, 
+            self.pts_attention_weights = nn.Linear(embed_dims,
                                             num_levels*num_points)
             self.pts_output_proj = nn.Linear(embed_dims, embed_dims)
             self.fused_embed += embed_dims
@@ -144,15 +144,15 @@ class FUTR3DCrossAtten(BaseModule):
                 nn.Linear(self.fused_embed, self.embed_dims),
                 nn.LayerNorm(self.embed_dims),
                 nn.ReLU(inplace=False),
-                nn.Linear(self.embed_dims, self.embed_dims), 
+                nn.Linear(self.embed_dims, self.embed_dims),
                 nn.LayerNorm(self.embed_dims),
             )
 
-        self.pos_encoder = nn.Sequential(
-            nn.Linear(3, self.embed_dims), 
+        self.position_encoder = nn.Sequential(
+            nn.Linear(3, self.embed_dims),
             nn.LayerNorm(self.embed_dims),
             nn.ReLU(inplace=False),
-            nn.Linear(self.embed_dims, self.embed_dims), 
+            nn.Linear(self.embed_dims, self.embed_dims),
             nn.LayerNorm(self.embed_dims),
         )
 
@@ -162,7 +162,7 @@ class FUTR3DCrossAtten(BaseModule):
         """Default initialization for Parameters of Module."""
         if self.use_Cam:
             constant_init(self.attention_weights, val=0., bias=0.)
-            xavier_init(self.img_output_proj, distribution='uniform', bias=0.)
+            xavier_init(self.output_proj, distribution='uniform', bias=0.)
         if self.use_LiDAR:
             constant_init(self.pts_attention_weights, val=0., bias=0.)
             xavier_init(self.pts_output_proj, distribution='uniform', bias=0.)
@@ -248,8 +248,8 @@ class FUTR3DCrossAtten(BaseModule):
             img_output = img_output.sum(-1).sum(-1).sum(-1)
             # output (num_query, B, emb_dims)
             img_output = img_output.permute(2, 0, 1)
-        
-            img_output = self.img_output_proj(img_output)
+
+            img_output = self.output_proj(img_output)
 
         if self.use_LiDAR:
             pts_attention_weights =  self.pts_attention_weights(query).view(
@@ -258,14 +258,14 @@ class FUTR3DCrossAtten(BaseModule):
             pts_output= feature_sampling_3D(
                 pts_feats, reference_points, self.pc_range)
             pts_output = torch.nan_to_num(pts_output)
-        
+
             pts_attention_weights = self.weight_dropout(pts_attention_weights.sigmoid())
             pts_output = pts_output * pts_attention_weights
             pts_output = pts_output.sum(-1).sum(-1).sum(-1)
             pts_output = pts_output.permute(2, 0, 1)
 
             pts_output = self.pts_output_proj(pts_output)
-        
+
         if self.use_Radar:
             radar_feats, radar_mask = rad_feats[:, :, :-1], rad_feats[:, :, -1]
             radar_xy = radar_feats[:, :, :2]
@@ -290,7 +290,7 @@ class FUTR3DCrossAtten(BaseModule):
             # [B, num_query, topk, radar_dim]
             radar_feats_topk = torch.gather(
                 radar_feats, dim=2, index=indices_pad, sparse_grad=False)
-        
+
             radar_attention_weights = self.radar_attention_weights(query).view(
                 bs, num_query, self.radar_topk)
 
@@ -303,7 +303,7 @@ class FUTR3DCrossAtten(BaseModule):
 
             # change to (num_query, bs, embed_dims)
             radar_out = radar_out.permute(1, 0, 2)
-        
+            
             radar_out = self.radar_output_proj(radar_out)
 
         if self.use_Cam and self.use_LiDAR:
@@ -318,7 +318,7 @@ class FUTR3DCrossAtten(BaseModule):
             output = pts_output
         reference_points_3d = reference_points.clone()
         # (num_query, bs, embed_dims)
-        return self.dropout(output) + inp_residual + self.pos_encoder(inverse_sigmoid(reference_points_3d)).permute(1, 0, 2)
+        return self.dropout(output) + inp_residual + self.position_encoder(inverse_sigmoid(reference_points_3d)).permute(1, 0, 2)
 
 
 def feature_sampling(mlvl_feats, reference_points, pc_range, img_metas):
@@ -333,10 +333,10 @@ def feature_sampling(mlvl_feats, reference_points, pc_range, img_metas):
     reference_points[..., 1:2] = reference_points[..., 1:2]*(pc_range[4] - pc_range[1]) + pc_range[1]
     reference_points[..., 2:3] = reference_points[..., 2:3]*(pc_range[5] - pc_range[2]) + pc_range[2]
     B, num_query = reference_points.size()[:2]
-    
+
     # reference_points (B, num_queries, 4)
     reference_points = torch.cat((reference_points, torch.ones_like(reference_points[..., :1])), -1)
-    
+
     num_cam = lidar2img.size(1)
     # ref_point change to (B, num_cam, num_query, 4, 1)
     reference_points = reference_points.view(B, 1, num_query, 4).repeat(1, num_cam, 1, 1).unsqueeze(-1)
@@ -355,7 +355,7 @@ def feature_sampling(mlvl_feats, reference_points, pc_range, img_metas):
     reference_points_cam = (reference_points_cam - 0.5) * 2
     mask = (mask & (reference_points_cam[..., 0:1] > -1.0)
                  & (reference_points_cam[..., 0:1] < 1.0)
-                 & (reference_points_cam[..., 1:2] > -1.0) 
+                 & (reference_points_cam[..., 1:2] > -1.0)
                  & (reference_points_cam[..., 1:2] < 1.0))
     # mask shape (B, 1, num_query, num_cam, 1, 1)
     mask = mask.view(B, num_cam, 1, num_query, 1, 1).permute(0, 2, 3, 1, 4, 5)
@@ -364,7 +364,6 @@ def feature_sampling(mlvl_feats, reference_points, pc_range, img_metas):
     num_points = 1
     for lvl, feat in enumerate(mlvl_feats):
         B, N, C, H, W = feat.size()
-        feat_flip = torch.flip(feat, [-1])
         feat = feat.view(B*N, C, H, W)
         # ref_point_cam shape change from (B, num_cam, num_query, 2) to (B*num_cam, num_query/10, 10, 2)
         reference_points_cam_lvl = reference_points_cam.view(B*N, int(num_query/10), 10, 2)
@@ -383,7 +382,7 @@ def feature_sampling(mlvl_feats, reference_points, pc_range, img_metas):
 def feature_sampling_3D(mlvl_feats, reference_points, pc_range):
     reference_points = reference_points.clone()
     reference_points_rel = reference_points[..., 0:2]
-    
+
     reference_points[..., 0:1] = reference_points[..., 0:1]*(pc_range[3] - pc_range[0]) + pc_range[0]
     reference_points[..., 1:2] = reference_points[..., 1:2]*(pc_range[4] - pc_range[1]) + pc_range[1]
     reference_points[..., 2:3] = reference_points[..., 2:3]*(pc_range[5] - pc_range[2]) + pc_range[2]

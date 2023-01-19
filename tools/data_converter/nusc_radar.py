@@ -12,9 +12,9 @@ from typing import List, Tuple, Union
 from mmdet3d.core.bbox.box_np_ops import points_cam2img
 from mmdet3d.datasets import NuScenesDataset
 
-nus_categories = ('car', 'truck', 'trailer', 'bus', 'construction_vehicle',
-                  'bicycle', 'motorcycle', 'pedestrian', 'traffic_cone',
-                  'barrier')
+#  remove the classes barrier, trafficcone and construction_vehicle
+nus_categories = ('car', 'truck', 'trailer', 'bus',
+                  'bicycle', 'motorcycle', 'pedestrian',)
 
 nus_attributes = ('cycle.with_rider', 'cycle.without_rider',
                   'pedestrian.moving', 'pedestrian.standing',
@@ -81,18 +81,18 @@ def create_nuscenes_infos(root_path,
     if test:
         print('test sample: {}'.format(len(train_nusc_infos)))
         data = dict(infos=train_nusc_infos, metadata=metadata)
-        info_path = osp.join(root_path,
+        info_path = osp.join('data/',
                              '{}_infos_test.pkl'.format(info_prefix))
         mmcv.dump(data, info_path)
     else:
         print('train sample: {}, val sample: {}'.format(
             len(train_nusc_infos), len(val_nusc_infos)))
         data = dict(infos=train_nusc_infos, metadata=metadata)
-        info_path = osp.join(root_path,
+        info_path = osp.join('data/',
                              '{}_infos_train.pkl'.format(info_prefix))
         mmcv.dump(data, info_path)
         data['infos'] = val_nusc_infos
-        info_val_path = osp.join(root_path,
+        info_val_path = osp.join('data/',
                                  '{}_infos_val.pkl'.format(info_prefix))
         mmcv.dump(data, info_val_path)
 
@@ -170,7 +170,7 @@ def _fill_trainval_infos(nusc,
             'token': sample['token'],
             'sweeps': [],
             'cams': dict(),
-            'radars': dict(), 
+            'radars': dict(),
             'lidar2ego_translation': cs_record['translation'],
             'lidar2ego_rotation': cs_record['rotation'],
             'ego2global_translation': pose_record['translation'],
@@ -202,6 +202,7 @@ def _fill_trainval_infos(nusc,
             cam_info.update(cam_intrinsic=cam_intrinsic)
             info['cams'].update({cam: cam_info})
 
+        # radar
         radar_names = ['RADAR_FRONT', 'RADAR_FRONT_LEFT', 'RADAR_FRONT_RIGHT',  'RADAR_BACK_LEFT', 'RADAR_BACK_RIGHT']
 
         for radar_name in radar_names:
@@ -226,6 +227,7 @@ def _fill_trainval_infos(nusc,
                     sweeps.append(radar_info)
             
             info['radars'].update({radar_name: sweeps})
+
         # obtain sweeps for a single key-frame
         sd_rec = nusc.get('sample_data', sample['data']['LIDAR_TOP'])
         sweeps = []
@@ -266,6 +268,13 @@ def _fill_trainval_infos(nusc,
                 if names[i] in NuScenesDataset.NameMapping:
                     names[i] = NuScenesDataset.NameMapping[names[i]]
             names = np.array(names)
+            # update valid now
+            name_in_track = [_a in nus_categories for _a in names]
+            name_in_track = np.array(name_in_track)
+            valid_flag = np.logical_and(valid_flag, name_in_track)
+
+            # add instance_ids
+            instance_inds = [nusc.getind('instance', ann['instance_token']) for ann in annotations]
             # we need to convert rot to SECOND format.
             gt_boxes = np.concatenate([locs, dims, -rots - np.pi / 2], axis=1)
             assert len(gt_boxes) == len(
@@ -278,6 +287,7 @@ def _fill_trainval_infos(nusc,
             info['num_radar_pts'] = np.array(
                 [a['num_radar_pts'] for a in annotations])
             info['valid_flag'] = valid_flag
+            info['instance_inds'] = instance_inds
 
         if sample['scene_token'] in train_scenes:
             train_nusc_infos.append(info)
@@ -628,4 +638,6 @@ def generate_record(ann_rec: dict, x1: float, y1: float, x2: float, y2: float,
 
 
 if __name__ == '__main__':
-    create_nuscenes_infos('data/nuscenes/', 'radar_nuscenes_5sweeps')
+    # create_nuscenes_infos('data/nuscenes/', 'track_radar')
+
+    create_nuscenes_infos('data/nuscenes/', 'radar_nuscenes_5sweeps', version='v1.0-trainval')

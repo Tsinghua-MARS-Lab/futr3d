@@ -9,7 +9,7 @@ point_cloud_range = [-51.2, -51.2, -5.0, 51.2, 51.2, 3.0]
 voxel_size = [0.2, 0.2, 8]
 
 img_norm_cfg = dict(
-    mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+    mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=True)
 
 class_names = [
     'car', 'truck', 'construction_vehicle', 'bus', 'trailer', 'barrier',
@@ -31,7 +31,7 @@ model = dict(
     use_grid_mask=True, # use grid mask
     img_backbone=dict(
         type='ResNet',
-        with_cp=False,
+        with_cp=True,
         #pretrained='open-mmlab://detectron2/resnet101_caffe',
         depth=101,
         num_stages=4,
@@ -324,10 +324,13 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=1.0 / 3,
-    step=[20, 23])
-total_epochs = 24
-evaluation = dict(interval=2, pipeline=eval_pipeline)
+    step=[8, 11])
+total_epochs = 12
+evaluation = dict(interval=1, pipeline=eval_pipeline)
 
-runner = dict(type='EpochBasedRunner', max_epochs=24)
+runner = dict(type='EpochBasedRunner', max_epochs=12)
 
 find_unused_parameters = False
+#fp16 = dict(loss_scale=512.)
+
+load_from='work_dirs/cam_only/epoch_24.pth'

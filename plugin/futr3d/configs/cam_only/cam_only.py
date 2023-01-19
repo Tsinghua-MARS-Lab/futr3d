@@ -1,6 +1,6 @@
 _base_ = [
-    '../../../configs/_base_/datasets/nus-3d.py',
-    '../../../configs/_base_/default_runtime.py'
+    '../../../../configs/_base_/datasets/nus-3d.py',
+    '../../../../configs/_base_/default_runtime.py'
 ]
 plugin=True
 plugin_dir='plugin/futr3d/'
@@ -9,7 +9,7 @@ point_cloud_range = [-51.2, -51.2, -5.0, 51.2, 51.2, 3.0]
 voxel_size = [0.1, 0.1, 0.2]
 
 img_norm_cfg = dict(
-    mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+    mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=True)
 
 class_names = [
     'car', 'truck', 'construction_vehicle', 'bus', 'trailer', 'barrier',
@@ -30,7 +30,7 @@ model = dict(
     use_grid_mask=True, # use grid mask
     img_backbone=dict(
         type='ResNet',
-        #pretrained='open-mmlab://detectron2/resnet101_caffe',
+        pretrained='open-mmlab://detectron2/resnet101_caffe',
         with_cp=True,
         depth=101,
         num_stages=4,
@@ -49,7 +49,7 @@ model = dict(
         add_extra_convs='on_output',
         #extra_convs_on_inputs=False,  # use P5
         num_outs=4,
-        norm_cfg=dict(type='BN2d'),
+        #norm_cfg=dict(type='BN2d'),
         relu_before_extra_convs=True),
     pts_voxel_layer=None,
     pts_voxel_encoder=None,
@@ -273,7 +273,7 @@ eval_pipeline = [
 
 data = dict(
     samples_per_gpu=1,
-    workers_per_gpu=0,
+    workers_per_gpu=4,
     train=dict(
         #type='CBGSDataset',
         #dataset=dict(
@@ -305,13 +305,12 @@ optimizer = dict(
 # max_norm=10 is better for SECOND
 optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
-
 lr_config = dict(
-    policy='step',
+    policy='CosineAnnealing',
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=1.0 / 3,
-    step=[21, 23])
+    min_lr_ratio=1e-3)
 
 total_epochs = 24
 evaluation = dict(interval=2, pipeline=eval_pipeline)
@@ -320,3 +319,4 @@ runner = dict(type='EpochBasedRunner', max_epochs=24)
 
 find_unused_parameters = False
 
+load_from = '/public/MARS/models/surrdet/image_models/fcos3d.pth'
