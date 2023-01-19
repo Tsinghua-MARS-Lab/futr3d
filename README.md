@@ -14,7 +14,7 @@ We built our implementation upon MMdetection3D. The major part of the code is in
 
 ### Data
 
-For cameras with Radar setting, you should generate a meta file or say .pkl file including Radar infos.
+For cameras with Radar setting, you should generate a meta file or say `.pkl` file including Radar infos.
 
 ```python:
 python3 tools/data_converter/nuscenes_converter_radar.py
@@ -31,7 +31,9 @@ bash tools/dist_train.sh plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py
 ```
 
 For LiDAR-Cam and Cam-Radar version, we need pre-trained model. 
+
 The Cam-Radar uses DETR3D model as pre-trained model, please check [DETR3D](https://github.com/WangYueFt/detr3d).
+
 The LiDAR-Cam uses fused LiDAR-only and Cam-only model as pre-trained model. You can use
 
 ```
