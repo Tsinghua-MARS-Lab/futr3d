@@ -55,7 +55,7 @@ bash tools/dist_train.sh plugin/futr3d/configs/lidar_cam/res101_01voxel_step_3e.
 ### LiDAR & Cam
 | models      | mAP         | NDS | Link |
 | ----------- | ----------- | ----| ---- |
-| [Res101 + 32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py)  | 64.2 | 68.0 | [model](https://drive.google.com/file/d/1SJbIHaOZFPNXDbtBn1yL1UZRMStL5N5P/view?usp=share_link)|
+| [Res101 + 32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_step_38e.py)  | 64.2 | 68.0 | [model](https://drive.google.com/file/d/1JoUXngi4z436Unt1hNNgwfQ36qa29t1y/view?usp=share_link)|
 | [Res101 + 4 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_4b_step_38e.py)   | 54.9 | 61.5 |
 | [Res101 + 1 beam VoxelNet](./plugin/futr3d/configs/lidar_only/01voxel_q6_1b_step_38e.py)   | 41.3 | 50.0 |
 
