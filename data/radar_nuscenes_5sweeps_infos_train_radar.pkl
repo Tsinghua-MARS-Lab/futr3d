@@ -1,1 +1,0 @@
-../../fusion-det/data/radar_nuscenes_5sweeps_infos_train_radar.pkl

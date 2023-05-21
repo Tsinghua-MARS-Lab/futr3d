@@ -1,1 +1,0 @@
-/home/xuanyao/fusion-det/data/nuscenes_infos_val.pkl
