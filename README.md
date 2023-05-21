@@ -59,20 +59,20 @@ bash tools/dist_train.sh plugin/futr3d/configs/lidar_cam/lidar_0075_cam_res101.p
 ### LiDAR & Cam
 | models      | mAP         | NDS | Link |
 | ----------- | ----------- | ----| ---- |
-| [Res101 + VoxelNet](./plugin/futr3d/configs/lidar_cam/lidar_0075v_cam_res101.py)  | 67.4 | 70.9 | [model](https://drive.google.com/file/d/1JoUXngi4z436Unt1hNNgwfQ36qa29t1y/view?usp=share_link)|
-| [VoVNet + VoxelNet](./plugin/futr3d/configs/lidar_cam/lidar_0075v_cam_vov.py)   | 70.3 | 73.1 |
+| [Res101 + VoxelNet](./plugin/futr3d/configs/lidar_cam/lidar_0075v_cam_res101.py)  | 67.4 | 70.9 | [model](https://drive.google.com/file/d/1hdsrQhWOD6CjgoTgyi1i3KV94IRt2OhF/view?usp=share_link)|
+| [VoVNet + VoxelNet](./plugin/futr3d/configs/lidar_cam/lidar_0075v_cam_vov.py)   | 70.3 | 73.1 | [model](https://drive.google.com/file/d/1DgrzSoZSlTT_RDNGplHUMXatboKlkCqq/view?usp=share_link) |
 
 
 ### Cam & Radar
 | models      | mAP         | NDS | Link |
 | ----------- | ----------- | ----| ----- |
-| [Res101 + Radar](./plugin/futr3d/configs/cam_radar/cam_res101_radar.py)  | 39.9  | 50.8 | [model](https://drive.google.com/file/d/1TRNeHrN5mOLWrUGEE0NJ3NxdtcAR5p6Q/view?usp=share_link) |
+| [Res101 + Radar](./plugin/futr3d/configs/cam_radar/cam_res101_radar.py)  | 39.9  | 50.8 | [model](https://drive.google.com/file/d/1LX3kflWap_qWjTNy3Zy9gL9_IXANkUo1/view?usp=share_link) |
 
 ### LiDAR only
 
 | models      | mAP         | NDS | Link |
 | ----------- | ----------- | ----|  ----|
-| [32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/lidar_0075v_900q.py)  | 63.3 | 68.9 | [model](https://drive.google.com/file/d/1HTe-Ys0Ybijw7ArFm89hnjVT0_kjy_TL/view?usp=sharing)|
+| [32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/lidar_0075v_900q.py)  | 63.3 | 68.9 | [model](https://drive.google.com/file/d/16y3o4Gn6NmNexM9E_ye4OnTeQNKWkOCk/view?usp=share_link)|
 | [4 beam VoxelNet](./plugin/futr3d/configs/lidar_only/lidar_0075v_900q_4b.py)   | 44.3 | 56.4 |
 | [1 beam VoxelNet](./plugin/futr3d/configs/lidar_only/lidar_0075v_900q_1b.py)   | 16.9 | 39.2 |
 
