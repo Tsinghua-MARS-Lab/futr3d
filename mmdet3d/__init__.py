@@ -1,49 +1,29 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import mmcv
+from .backbones import *  # noqa: F401,F403
+from .builder import (BACKBONES, DETECTORS, FUSION_LAYERS, HEADS, LOSSES,
+                      MIDDLE_ENCODERS, NECKS, ROI_EXTRACTORS, SEGMENTORS,
+                      SHARED_HEADS, VOXEL_ENCODERS, build_backbone,
+                      build_detector, build_fusion_layer, build_head,
+                      build_loss, build_middle_encoder, build_model,
+                      build_neck, build_roi_extractor, build_shared_head,
+                      build_voxel_encoder)
+from .decode_heads import *  # noqa: F401,F403
+from .dense_heads import *  # noqa: F401,F403
+from .detectors import *  # noqa: F401,F403
+from .fusion_layers import *  # noqa: F401,F403
+from .losses import *  # noqa: F401,F403
+from .middle_encoders import *  # noqa: F401,F403
+from .model_utils import *  # noqa: F401,F403
+from .necks import *  # noqa: F401,F403
+from .roi_heads import *  # noqa: F401,F403
+from .segmentors import *  # noqa: F401,F403
+from .voxel_encoders import *  # noqa: F401,F403
 
-import mmdet
-import mmseg
-from .version import __version__, short_version
-
-
-def digit_version(version_str):
-    digit_version = []
-    for x in version_str.split('.'):
-        if x.isdigit():
-            digit_version.append(int(x))
-        elif x.find('rc') != -1:
-            patch_version = x.split('rc')
-            digit_version.append(int(patch_version[0]) - 1)
-            digit_version.append(int(patch_version[1]))
-    return digit_version
-
-
-mmcv_minimum_version = '1.5.2'
-mmcv_maximum_version = '1.7.0'
-mmcv_version = digit_version(mmcv.__version__)
-
-
-assert (mmcv_version >= digit_version(mmcv_minimum_version)
-        and mmcv_version <= digit_version(mmcv_maximum_version)), \
-    f'MMCV=={mmcv.__version__} is used but incompatible. ' \
-    f'Please install mmcv>={mmcv_minimum_version}, <={mmcv_maximum_version}.'
-
-mmdet_minimum_version = '2.24.0'
-mmdet_maximum_version = '3.0.0'
-mmdet_version = digit_version(mmdet.__version__)
-assert (mmdet_version >= digit_version(mmdet_minimum_version)
-        and mmdet_version <= digit_version(mmdet_maximum_version)), \
-    f'MMDET=={mmdet.__version__} is used but incompatible. ' \
-    f'Please install mmdet>={mmdet_minimum_version}, ' \
-    f'<={mmdet_maximum_version}.'
-
-mmseg_minimum_version = '0.20.0'
-mmseg_maximum_version = '1.0.0'
-mmseg_version = digit_version(mmseg.__version__)
-assert (mmseg_version >= digit_version(mmseg_minimum_version)
-        and mmseg_version <= digit_version(mmseg_maximum_version)), \
-    f'MMSEG=={mmseg.__version__} is used but incompatible. ' \
-    f'Please install mmseg>={mmseg_minimum_version}, ' \
-    f'<={mmseg_maximum_version}.'
-
-__all__ = ['__version__', 'short_version']
+__all__ = [
+    'BACKBONES', 'NECKS', 'ROI_EXTRACTORS', 'SHARED_HEADS', 'HEADS', 'LOSSES',
+    'DETECTORS', 'SEGMENTORS', 'VOXEL_ENCODERS', 'MIDDLE_ENCODERS',
+    'FUSION_LAYERS', 'build_backbone', 'build_neck', 'build_roi_extractor',
+    'build_shared_head', 'build_head', 'build_loss', 'build_detector',
+    'build_fusion_layer', 'build_model', 'build_middle_encoder',
+    'build_voxel_encoder'
+]
