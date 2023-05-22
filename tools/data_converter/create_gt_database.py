@@ -217,11 +217,11 @@ def create_groundtruth_database(dataset_class_name,
             ])
 
     dataset = build_dataset(dataset_cfg)
-    save_path = 'data/nusc_new'
+    
     if database_save_path is None:
-        database_save_path = osp.join(save_path, f'{info_prefix}_gt_database')
+        database_save_path = osp.join(data_path, f'{info_prefix}_gt_database')
     if db_info_save_path is None:
-        db_info_save_path = osp.join(save_path,
+        db_info_save_path = osp.join(data_path,
                                      f'{info_prefix}_dbinfos_train.pkl')
     mmcv.mkdir_or_exist(database_save_path)
     all_db_infos = dict()

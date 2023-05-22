@@ -73,19 +73,19 @@ def nuscenes_data_prep(root_path,
     """
     nuscenes_converter.create_nuscenes_infos(
         root_path, info_prefix, version=version, max_sweeps=max_sweeps)
-    return 
-    # if version == 'v1.0-test':
-    #     info_test_path = osp.join(root_path, f'{info_prefix}_infos_test.pkl')
-    #     nuscenes_converter.export_2d_annotation(
-    #         root_path, info_test_path, version=version)
-    #     return
+    
+    if version == 'v1.0-test':
+        info_test_path = osp.join(root_path, f'{info_prefix}_infos_test.pkl')
+        nuscenes_converter.export_2d_annotation(
+            root_path, info_test_path, version=version)
+        return
 
     info_train_path = osp.join(root_path, f'{info_prefix}_infos_train.pkl')
     info_val_path = osp.join(root_path, f'{info_prefix}_infos_val.pkl')
-    #nuscenes_converter.export_2d_annotation(
-    #    root_path, info_train_path, version=version)
-    #nuscenes_converter.export_2d_annotation(
-    #    root_path, info_val_path, version=version)
+    nuscenes_converter.export_2d_annotation(
+        root_path, info_train_path, version=version)
+    nuscenes_converter.export_2d_annotation(
+        root_path, info_val_path, version=version)
     create_groundtruth_database(dataset_name, root_path, info_prefix,
                                 'data/nusc_new/nuscenes_infos_train.pkl')
 
