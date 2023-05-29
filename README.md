@@ -74,7 +74,7 @@ bash tools/dist_train.sh plugin/futr3d/configs/lidar_cam/lidar_0075_cam_res101.p
 
 | models      | mAP         | NDS | Link |
 | ----------- | ----------- | ----|  ----|
-| [32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/lidar_0075v_900q.py)  | 63.3 | 68.9 | [model](https://drive.google.com/file/d/16y3o4Gn6NmNexM9E_ye4OnTeQNKWkOCk/view?usp=share_link)|
+| [32 beam VoxelNet](./plugin/futr3d/configs/lidar_only/lidar_0075v_900q.py)  | 63.3 | 68.9 | [model](https://drive.google.com/file/d/1660B8m1CsDf_DwxdD_sXsdSTL7FbBnZn/view?usp=share_link)|
 | [4 beam VoxelNet](./plugin/futr3d/configs/lidar_only/lidar_0075v_900q_4b.py)   | 44.3 | 56.4 |
 | [1 beam VoxelNet](./plugin/futr3d/configs/lidar_only/lidar_0075v_900q_1b.py)   | 16.9 | 39.2 |
 
