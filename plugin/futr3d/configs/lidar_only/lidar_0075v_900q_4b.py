@@ -4,7 +4,7 @@ _base_ = [
     '../../../configs/_base_/default_runtime.py'
 ]
 
-plugin = 'plugin/fudet'
+plugin = 'plugin/futr3d'
 
 class_names = [
     'car', 'truck', 'construction_vehicle', 'bus', 'trailer', 'barrier',
